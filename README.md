@@ -11,7 +11,7 @@ The PhoneGap/Cordova SDK was tested on Cordova v6.1.1 and 6.2.0
 
 ## Installation
 
-	cordova plugin add localytics-cordova --variable YOUR_APP_KEY=value --variable PACKAGE_NAME=value --variable YOUR_PUSH_ID=value
+	cordova plugin add https://github.com/JasonElbert/LocalyticsAndroid.git --variable YOUR_APP_KEY=value --variable PACKAGE_NAME=value --variable YOUR_PUSH_ID=value
 
 ## Integration
 
