@@ -3,7 +3,7 @@ Localytics for PhoneGap/Cordova
 
 ## Version
 
-This version of the PhoneGap/Cordova SDK wraps v3.8.0 of the Localytics Andriod and iOS SDKs
+This version of the PhoneGap/Cordova SDK wraps v3.8.0 of the Localytics Andriod
 
 ## Supported Versions
 
@@ -11,41 +11,34 @@ The PhoneGap/Cordova SDK was tested on Cordova v6.1.1 and 6.2.0
 
 ## Installation
 
-	cordova plugin add localytics-cordova
+	cordova plugin add localytics-cordova --variable YOUR_APP_KEY=value --variable PACKAGE_NAME=value --variable YOUR_PUSH_ID=value
 
 ## Integration
 
 To install Localytics for Phonegap, you'll need to take three basic steps.
 
-1. Set up your app key for each platform.
+1. Download after_platform_add source from https://github.com/JasonElbert/Hooks.git and add to Hook folder in your phonegap/cordova project.
 
-2. Integrate your app with Localytics.
+2. Set up your android project and Integrate your app with Localytics.
 
 3. Set up and register for Push notifications, if necessary.
 
 
 ### 1. Set up app keys
 
-App keys allow you to separate data. Create one set of app keys for each app, so you can focus on one app at a time in the Dashboard.
+App keys allow you to separate data. Create one set of app keys for each app, so you can focus on one app at a time in the Dashboard (https://www.localytics.com/). 
 
 You’ll need an app key for each device platform, such as iOS, Android, Windows, or web. Separate test data from production data by using separate app keys.
 
 When you release your app to the app store, make sure your production app key is in it! You can feel free to delete your test app keys and make new ones whenever you want.
 
-#### iOS
-In your \<ApplicationName\>-Info.plist, add the following under \<dict\> node:
-
-	<key>LocalyticsAppKey</key>
-    <string>YOUR_APP_KEY</string>
-
 #### Android
 
-In AndroidManifest.xml, add the following under \<application\> node:
+Please download hook source from https://github.com/JasonElbert/Hooks.git.
 
-	<meta-data android:name="LOCALYTICS_APP_KEY" android:value="YOUR_APP_KEY" />
+Add this source to your project's hook folder.
 
-
->*Note* Replace YOUR\_APP\_KEY with your Localytics app key.
+Set up your android platform.
 
 ### 2. Automatic or manual integration?
 
@@ -90,61 +83,12 @@ Add the following for manual integration.
 
 Additionally, for each platform:
 
-#### iOS
-
-Ensure the following libraries are added to your project's .xcodeproj:
-
-    AdSupport.framework
-    libsqlite3.tbd
-    libz.tbd
-    SystemConfiguration.framework
-
-If compiling against iOS 9 SDK, add an App Transport Security exception to Info.plist:
-
-    <key>NSAppTransportSecurity</key>
-        <dict>
-            <key>NSExceptionDomains</key>
-            <dict>
-                <key>public.localytics.s3.amazonaws.com</key>
-                <dict>
-                    <key>NSExceptionAllowsInsecureHTTPLoads</key>
-                    <true/>
-                </dict>
-                <key>pushapi.localytics.com</key>
-                <dict>
-                    <key>NSExceptionAllowsInsecureHTTPLoads</key>
-                    <true/>
-                </dict>
-            </dict>
-        </dict>
-
-#### Android
-
-Ensure the following ReferralReceiver is added to AndroidManifest.xml within the application tag:
-
-	<receiver android:name="com.localytics.android.ReferralReceiver"
-	android:exported="true">
-		<intent-filter>
-			<action android:name="com.android.vending.INSTALL_REFERRER" />
-		</intent-filter>
-	</receiver>
-
-
 ### 3. Set up and register for push notifications
 
 iOS uses Apple Push Notification (APN) while Android uses Google Cloud Messaging (GCM). Follow the instructions for each respective push notification service to set up the necessary configurations and upload the certificate to the Localytics Dashboard before continuing with these instructions.
 
 >*Note*: In-App messaging is not supported on Android at this time. The native Android implementation to handle in-app messaging makes use of the FragmentActivity class that is incompatible with the primary CordovaActivity class that holds the Webview.
 
-#### iOS
-
-[Follow these instructions to set up push notifications for your app.]( http://docs.localytics.com/dev/ios.html#enable-background-modes-ios)
-
-Afterwards, simply call the following after the integration code in the previous step.
-
-	Localytics.registerPush();
-
->*Note*: registerNotification relies on "CDVRemoteNotification", "CDVRemoteNotificationError" and "CDVPluginHandleOpenURLNotification" broadcasted by cordova's AppDelegate.m class. If you change the AppDelegate, ensure to rebroadcast these events from the appropriate handlers to ensure correct behavior. Alternatively, you can also integrate manually through native code instead.
 
 #### Android
 
@@ -154,31 +98,6 @@ Next, copy the Google Play Services library and add it as a dependency to your p
 
 1. Copy the folder \<ANDROID_SDK_DIR\>/extras/google/google\_play\_services\_lib/ to \<YOUR_PROJECT\>/platforms/android/
 2. Add an extra line to \<YOUR_PROJECT\>/platforms/android/project.properties: "android.library.reference.2=google-play-services_lib
-
-In your AndroidManifest.xml, ensure the following are added _before_ your \<application\> tag:
-
->*Note*: replace YOUR.PACKAGE.NAME with your package name, ie, com.yourcompany.yourapp
-
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.WAKE_LOCK" />   
-	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-
-	<permission android:name="YOUR.PACKAGE.NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-	<uses-permission android:name="YOUR.PACKAGE.NAME.permission.C2D_MESSAGE" />
-
-Inside your \<application\> tag, add:
-
->*Note*: replace YOUR.PACKAGE.NAME with your package name and \<YOUR_PUSH_ID\> with your GCM push id. **The "\\ " before the push id is intentional (ie. android:value="\ 1234567")**.
-
-	<activity android:name="com.localytics.android.PushTrackingActivity" />
-	<receiver android:name="com.localytics.android.PushReceiver" android:permission="com.google.android.c2dm.permission.SEND">
-		<intent-filter>
-			<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-			<action android:name="com.google.android.c2dm.intent.RECEIVE" />
-			<category android:name="YOUR.PACKAGE.NAME" />
-		</intent-filter>
-	</receiver>
-    <meta-data android:name="com.localytics.android_push_sender_id" android:value="\ <YOUR_PUSH_ID>" />
 
 
 Afterwards, simply call the following function after the integration code in the previous step.

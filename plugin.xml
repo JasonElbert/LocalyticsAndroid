@@ -62,6 +62,11 @@
                     <category android:name="$PACKAGE_NAME" />
                 </intent-filter>
             </receiver>
+            <receiver android:name="com.localytics.android.ReferralReceiver" android:exported="true">
+                <intent-filter>
+                    <action android:name="com.android.vending.INSTALL_REFERRER" />
+                </intent-filter>
+            </receiver>
             <meta-data android:name="$YOUR_APP_KEY" android:value="$YOUR_APP_KEY" />
             <meta-data android:name="com.localytics.android_push_sender_id" android:value="\ $YOUR_PUSH_ID" />
         </config-file>
